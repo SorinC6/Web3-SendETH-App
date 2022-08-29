@@ -28,7 +28,11 @@ export const TrasnactionProvider = ({ children }) => {
     keyword: "",
     message: "",
   });
-
+  const [loading, setLoading] = useState(false);
+  const [transactionCount, setTransactionCount] = useState(
+    localStorage.getItem("transactionCount")
+  );
+  console.log("currentAccount@@@@@", currentAccount);
   const handleChange = (e, name) => {
     setFormData((prevState) => {
       return { ...prevState, [name]: e.target.value };
@@ -41,7 +45,7 @@ export const TrasnactionProvider = ({ children }) => {
         return alert("Please install metamask");
       }
       const accounts = await ethereum.request({ method: "eth_accounts" });
-      if (accounts?.lenth) {
+      if (accounts?.length) {
         setCurrentAccount(accounts[0]);
 
         // get all transaction here later
@@ -72,13 +76,13 @@ export const TrasnactionProvider = ({ children }) => {
   };
 
   const sendTransaction = async () => {
-    console.log("FORM DATAAAAA", formData);
-
     try {
       if (!ethereum) {
         return alert("Please install metamask");
       }
       const { addressTo, amount, keyword, message } = formData;
+      console.log("FORM DATAAAAA", { addressTo, amount, keyword, message });
+      console.log("currentAccount", currentAccount);
 
       const transactionContract = getEthereumContract();
       const parsedAmount = ethers.utils.parseEther(amount);
@@ -101,6 +105,15 @@ export const TrasnactionProvider = ({ children }) => {
         message,
         keyword
       );
+
+      setLoading(true);
+      console.log("LOADING", transactionHash.hash);
+      await transactionHash.wait();
+      setLoading(false);
+      console.log("SUCCESSS", transactionHash.hash);
+
+      const transactionCount = await transactionContract.getTransactionCount();
+      setTransactionCount(transactionCount.toNumber());
     } catch (error) {
       console.log("ERROR", error);
       throw new Error("No etherum object found");
