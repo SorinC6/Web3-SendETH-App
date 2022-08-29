@@ -4,10 +4,12 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { TrasnactionProvider } from './context/TransactionContext'
+import { Toaster } from "react-hot-toast";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <TrasnactionProvider>
+    <Toaster />
     <React.StrictMode>
       <App />
     </React.StrictMode>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const APIKEY = process.env.GIPHY_API;
+const APIKEY = process.env.REACT_APP_GIPHY_API;
 
 const useFetch = ({ keyword }) => {
   const [gifUrl, setGifUrl] = useState("");
